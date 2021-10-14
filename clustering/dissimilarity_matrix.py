@@ -28,23 +28,7 @@ class DissimilarityMatrix:
         """
         self.data = data
         self.n = data.shape[0]
-        
-    def scalar_projection(self, a, b):
-        """Calculates the scalar projection of a on b.
-        
-        Args:
-            a (ndarray):
-                Vector coordinates of a
-            b (ndarray):
-                Vector coordinates of unit vector b
-        Return:
-            scalar_proj (ndarrray):
-                Scalar projection of a on b
-        """
-        # scalar_proj = (np.dot(a, b)/np.linalg.norm(b))
-        scalar_proj = a - np.dot(a, b)*b
-        
-        return scalar_proj
+
     def row_col_dist(self, u, v, w1, w2):
         """Calculates the weighted distance between u and v (row - col).
         
@@ -71,61 +55,6 @@ class DissimilarityMatrix:
         d3 = abs(u[2] - v[2])
         
         dist = w1*d3 + w2*abs(d1 - d2)/self.n
-        return dist
-        
-    def projection_dist(self, u, v, diag_unit, w1, w2):
-        """Calculates the weighted distance between u and v (projection).
-        
-        Calculates the weighted distance between u and v
-            w1*|z_u - z_v| + w2*|proj_u - proj_v|,
-        where z is the number of interactions and proj_u and proj_v is the 
-        projection of u and v on the diagonal, respectively. The sum of the
-        weights equals 1.
-
-        Args:
-            u (ndarray):
-                Array containing one point.
-            v (ndarray):
-                Array containing one point.
-            w1 (float):
-                Interaction weight.
-            w2 (float):
-                Diagonal distance weight.
-        Result:
-            dist (float):
-                Weighted distance between points u and v.
-        """       
-        # longest distance from the diagonal
-        #max_dist_diag =  np.linalg.norm(diag)/2
-        
-        # size of diagonal clusters
-        #size_diag_clusters = max_dist_diag/medoids
-        
-        max_diag = self.n/np.sqrt(2)
-        
-        # the maximum distance from the diagonal
-        proj_u = np.linalg.norm(self.scalar_projection(u[:2], diag_unit))
-        proj_v = np.linalg.norm(self.scalar_projection(v[:2], diag_unit))
-        
-        d3 = abs(u[2] - v[2])
-        dist = w1*d3 + w2*abs(proj_u - proj_v)/max_diag
-        
-        return dist
-
-    def minkowski_(self, u, v, k):
-        """Calculates the minkowski distance of order k between point u and v.
-
-        Args:
-            u (ndarray):
-                Array containing one point.
-            v (ndarray):
-                Array containing one point.
-        Result:
-            dist (float):
-                Euclidean distance between the two points u and v
-        """
-        u_v = u - v
-        dist = np.linalg.norm(u_v, ord=k)
         return dist
 
     def transform_data_nan(self, scaler=None):
