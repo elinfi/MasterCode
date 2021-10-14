@@ -48,7 +48,8 @@ class KMedoids(DissimilarityMatrix):
         """
         self.kmedoids_result = kmedoids.fasterpam(self.distmat, 
                                                   medoids, 
-                                                  max_iter, init, 
+                                                  max_iter, 
+                                                  init, 
                                                   random_state)
         return self.kmedoids_result
     
@@ -104,7 +105,6 @@ class KMedoids(DissimilarityMatrix):
         labels_nan_list[~triu_nan_idx] = labels_list
         # labels_nan_list = np.where(~triu_nan_idx, labels_nan_list, np.nan)
         labels_nan_list[triu_nan_idx] = np.nan
-        print(f"labels_nan_list: {np.sum(np.isnan(labels_nan_list))}")
         
         # initialize cluster matrix
         labels_mat = np.zeros((n, n))
@@ -114,7 +114,6 @@ class KMedoids(DissimilarityMatrix):
         
         labels_mat = labels_mat + labels_mat.T
         labels_mat[np.diag_indices(n)] /= 2 # diagonal elements added twice
-        print(f"labels_mat: {np.sum(np.isnan(labels_mat))}")
         
         self.labels_list = labels_list
         self.labels_nan_list = labels_nan_list
