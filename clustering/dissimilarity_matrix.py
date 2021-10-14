@@ -129,36 +129,9 @@ class DissimilarityMatrix:
 
         # create matrix with x, y, z as columns
         X = np.array([x, y, z]).T
-        
-        masked_X = ma.masked_invalid(X)
 
-        return masked_X
-    
-    def tranform_data2(self, scaler=None):
-        n = self.n
-        triu_idx = np.triu_indices(n)
-        masked_data = ma.masked_invalid(self.data)
-        
-        masked_triu_idx = masked_data(triu_idx).mask
-        
-        # create 2d coordinate system in 1d of the upper triangular matrix
-        xy = np.ones((n, n))*np.linspace(0, n-1, n)
-        x = xy.T[triu_idx]
-        y = xy[triu_idx]
-        
-        # extract the upper triangular matrix of data into a flat array      
-        z = self.data[triu_idx]
-        if scaler:
-            scaler.fit(z.reshape(1, -1))
-            z_scaled = scaler.transform(z.reshape(1, -1))
-            z = z_scaled[0, :]
-     
-        # create matrix with x, y, z as columns
-        X = ma.array([x, y, z]).T
-        X.mask = np.stack((masked_triu_idx, masked_triu_idx, masked_triu_idx), axis=1)
-        
-        
-
+        return X
+          
     def scipy_dist(self, metric, scaler=None, remove_nan=True, **kwargs):
         """
         Computes the distance matrix using scipy.pdist.
