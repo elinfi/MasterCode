@@ -134,10 +134,10 @@ class DissimilarityMatrix:
           
     def scipy_dist(self, metric, scaler=None, remove_nan=True, **kwargs):
         """
-        Computes the distance matrix using scipy.pdist.
+        Computes the distance matrix using scipy.pdist with a given metric.
         
         Args:
-            metric {'euclidean', 'test_euclidean'}:
+            metric {'row_col_dist'}:
                 Which metric to use when calculating the dissimilarity matrix
         Return:
             distmat (array):
@@ -179,7 +179,8 @@ class DissimilarityMatrix:
 
         # calculate the pairwise distances between data point and convert it
         # to square distance matrix
-        distmat = pairwise_distances(X, metric=metric, force_all_finite=False, n_jobs=-1, **kwargs)
+        distmat = pairwise_distances(X, metric=metric, force_all_finite=False, 
+                                     n_jobs=-1, **kwargs)
         
         return distmat
 
