@@ -33,8 +33,8 @@ class DissimilarityMatrix:
         """Calculates the weighted distance between u and v (row - col).
         
         Calculates the weighted distance between u and v
-            w1*|z_u - z_v| + w2*| |x_u - x_v| - |y_u - y_v| |,
-        where z is the number of interactions, x is the row index and y is the  
+            w1*|u_z - v_z| + w2*| |u_i - v_i| - |u_j - v_j| |,
+        where z is the number of interactions, i is the row index and j is the  
         column index. The sum of the weights equals 1.
 
         Args:
@@ -55,6 +55,25 @@ class DissimilarityMatrix:
         d3 = abs(u[2] - v[2])
         
         dist = w1*d3 + w2*abs(d1 - d2)/self.n
+        return dist
+    
+    def manhattan(selv, u, v):
+        """Calculates the manahattan distance between u and v.
+        
+        Calculates the manhattan distance between u and v given by
+            |u_i - v_i| + |u_j - v_j|,
+        where i is the row index and j is the column index.
+        
+        Args:
+            u (ndarray):
+                Array containing one data point.
+            v (ndarray):
+                Array containing one data point.
+        Result:
+            dist (float):
+                Manahattan distance between u and v.
+        """
+        dist = np.sum(u - v)
         return dist
 
     def transform_data_nan(self, scaler=None):
