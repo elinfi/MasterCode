@@ -11,7 +11,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 class DissimilarityMatrix:
-    def __init__(self, data):
+    def __init__(self, data, remove_nan=True, scaler=None):
         """Creates a dissimilarity matrix.
 
         Creates a dissimilarity based on a Hi-C data matrix with a given
@@ -25,9 +25,18 @@ class DissimilarityMatrix:
         Attributes:
             n (int):
                 Length of data matrix
+            X (ndarray):
+                n x 3 array containing the bin1 and bin2 in the first two
+                columns and the number of interactions in the last column
         """
         self.data = data
         self.n = data.shape[0]
+        
+        # transform data
+        if remove_nan:
+            self.X = self.transform_data_nan(scaler)
+        else:
+            self.X = self.transform_data(scaler)
         
     def interactions_dist(self, u, v):
         """Calculates the difference in number of interactions.
@@ -90,7 +99,7 @@ class DissimilarityMatrix:
             dist (float):
                 Manahattan distance between u and v.
         """
-        dist = np.sum(u - v)/(2*self.n)
+        dist = (abs(u[0] - v[0]) + abs(u[1] - v[1]))/(2*self.n)
         return dist
 
     def transform_data_nan(self, scaler=None):
@@ -168,7 +177,7 @@ class DissimilarityMatrix:
 
         return X
           
-    def scipy_dist(self, metric, scaler=None, remove_nan=True, **kwargs):
+    def scipy_dist(self, metric, **kwargs):
         """
         Computes the distance matrix using scipy.pdist with a given metric.
         
@@ -179,19 +188,13 @@ class DissimilarityMatrix:
             distmat (array):
                 Distance matrix on square form
         """
-        # transform data
-        if remove_nan:
-            X = self.transform_data_nan(scaler)
-        else:
-            X = self.transform_data(scaler)
-        
         if hasattr(self, metric):
             # call metric function
             metric = getattr(self, metric)
             
         # calculate the pairwise distances between data point and convert it
         # to square distance matrix
-        distmat = squareform(pdist(X, metric=metric, **kwargs))
+        distmat = squareform(pdist(self.X, metric=metric, **kwargs))
 
         return distmat
     
@@ -206,16 +209,13 @@ class DissimilarityMatrix:
             distmat (array):
                 Distance matrix on square form
         """
-        # transform data
-        X = self.transform_data(scaler)        
-        
         if hasattr(self, metric):
             # call metric function
             metric = getattr(self, metric)
 
         # calculate the pairwise distances between data point and convert it
         # to square distance matrix
-        distmat = pairwise_distances(X, metric=metric, force_all_finite=False, 
+        distmat = pairwise_distances(self.X, metric=metric, force_all_finite=False, 
                                      n_jobs=-1, **kwargs)
         
         return distmat
