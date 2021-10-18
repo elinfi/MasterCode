@@ -37,71 +37,7 @@ class DissimilarityMatrix:
             self.X = self.transform_data_nan(scaler)
         else:
             self.X = self.transform_data(scaler)
-        
-    def interactions_dist(self, u, v):
-        """Calculates the difference in number of interactions.
-        
-        Calculates the difference in number of interactions given by
-            dist = |u_z - v_z|
-        where z is the number of interactions.
-        
-        Args:
-            u (ndarray):
-                Array containing one data point.
-            v (ndarray):
-                Array containing one data point.
-        Result:
-            dist (float):
-                Difference in number of interactions between u and v.
-        """
-        dist = abs(u[2] - v[2])
-        return dist
-        
-    def diagonal_dist(self, u, v):
-        """Calculates the scaled difference in distance from the main diagonal.
-        
-        Calculates the scaled  difference in distance from the main diagonal 
-        between u and v given by
-            dist = | |u_i - v_i| - |u_j - v_j| | / n,
-        where i is the row index, j is the column index and n is the maximum 
-        distance from the main diagonal. The maximum diagonal distance equals
-        the length of the matrix when square.
-
-        Args:
-            u (ndarray):
-                Array containing one data point.
-            v (ndarray):
-                Array containing one data point.
-        Result:
-            dist (float):
-                Difference in distance from the main diagonal between u and v.
-        """
-        d1 = abs(u[0] - u[1])
-        d2 = abs(v[0] - v[1])
-        
-        dist = abs(d1 - d2)/self.n
-        return dist
-    
-    def manhattan(self, u, v):
-        """Calculates the scaled manahattan distance between u and v.
-        
-        Calculates the scaled manhattan distance between u and v given by
-            dist = (|u_i - v_i| + |u_j - v_j|)/2n,
-        where i is the row index,j is the column index and 2n is the maximum 
-        manhattan distance.
-        
-        Args:
-            u (ndarray):
-                Array containing one data point.
-            v (ndarray):
-                Array containing one data point.
-        Result:
-            dist (float):
-                Manahattan distance between u and v.
-        """
-        dist = (abs(u[0] - v[0]) + abs(u[1] - v[1]))/(2*self.n)
-        return dist
-
+            
     def transform_data_nan(self, scaler=None):
         """Extract the upper triangular of the data matrix.
 
@@ -176,6 +112,70 @@ class DissimilarityMatrix:
         X = np.array([x, y, z]).T
 
         return X
+        
+    def interactions_dist(self, u, v):
+        """Calculates the difference in number of interactions.
+        
+        Calculates the difference in number of interactions given by
+            dist = |u_z - v_z|
+        where z is the number of interactions.
+        
+        Args:
+            u (ndarray):
+                Array containing one data point.
+            v (ndarray):
+                Array containing one data point.
+        Result:
+            dist (float):
+                Difference in number of interactions between u and v.
+        """
+        dist = abs(u[2] - v[2])
+        return dist
+        
+    def diagonal_dist(self, u, v):
+        """Calculates the scaled difference in distance from the main diagonal.
+        
+        Calculates the scaled  difference in distance from the main diagonal 
+        between u and v given by
+            dist = | |u_i - v_i| - |u_j - v_j| | / n,
+        where i is the row index, j is the column index and n is the maximum 
+        distance from the main diagonal. The maximum diagonal distance equals
+        the length of the matrix when square.
+
+        Args:
+            u (ndarray):
+                Array containing one data point.
+            v (ndarray):
+                Array containing one data point.
+        Result:
+            dist (float):
+                Difference in distance from the main diagonal between u and v.
+        """
+        d1 = abs(u[0] - u[1])
+        d2 = abs(v[0] - v[1])
+        
+        dist = abs(d1 - d2)/self.n
+        return dist
+    
+    def manhattan(self, u, v):
+        """Calculates the scaled manahattan distance between u and v.
+        
+        Calculates the scaled manhattan distance between u and v given by
+            dist = (|u_i - v_i| + |u_j - v_j|)/2n,
+        where i is the row index,j is the column index and 2n is the maximum 
+        manhattan distance.
+        
+        Args:
+            u (ndarray):
+                Array containing one data point.
+            v (ndarray):
+                Array containing one data point.
+        Result:
+            dist (float):
+                Manahattan distance between u and v.
+        """
+        dist = (abs(u[0] - v[0]) + abs(u[1] - v[1]))/(2*self.n)
+        return dist
           
     def scipy_dist(self, metric, **kwargs):
         """
