@@ -1,7 +1,7 @@
 import numpy as np
 
 class SimulateData:
-    def __init__(self, resolution, region):
+    def __init__(self, resolution, region, n):
         """
         Simulate Hi-C data.
         
@@ -17,6 +17,7 @@ class SimulateData:
         """
         self.resolutioin = resolution
         self.region = region
+        self.n = n
         self.matrix = self.create_matrix(resolution, region)
         
     def create_matrix(self, resolution, region):
@@ -34,6 +35,8 @@ class SimulateData:
             matrix (ndarray):
                 Zeroes numpy array.
         """
-        n = 50
+        n = self.n
         matrix = np.zeros((n, n))
+        
+    def fill_diag(self):
         
