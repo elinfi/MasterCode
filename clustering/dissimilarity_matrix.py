@@ -43,8 +43,9 @@ class DissimilarityMatrix:
 
         Return:
             X (ndarray):
-                n x 3 array containing the bin1 and bin2 in the first two
-                columns and the number of interactions in the last column
+                n x 3 array containing the row indices in the first column,
+                column indices in the second colum and the number of 
+                interactions in the last column.
         """
         #assert log_scale in [None, 'log2', 'log10', 'MinMax'], 'Only None, 2 or 10 are valid log scales'
             
@@ -83,8 +84,9 @@ class DissimilarityMatrix:
 
         Return:
             X (ndarray):
-                n x 3 array containing the bin1 and bin2 in the first two
-                columns and the number of interactions in the last column
+                n x 3 array containing the row indices in the first column,
+                column indices in the second colum and the number of 
+                interactions in the last column.
         """
         #assert log_scale in [None, 'log2', 'log10', 'MinMax'], 'Only None, 2 or 10 are valid log scales'
             
@@ -176,8 +178,14 @@ class DissimilarityMatrix:
         """
         dist = (abs(u[0] - v[0]) + abs(u[1] - v[1]))/(2*self.n)
         return dist
+    
+    def diag_3d_dist(self, u, v):
+        d1 = np.sqrt((u[0] - u[1])**2/(2*self.n) + u[2]**2)
+        d2 = np.sqrt((v[0] - v[1])**2/(2*self.n) + v[2]**2)
+        
+        dist = abs(d1 - d2)
           
-    def scipy_dist(self, metric, **kwargs):
+    def scipy_dist(self, metric, col1, col2, **kwargs):
         """
         Computes the distance matrix using scipy.pdist with a given metric.
         
@@ -194,7 +202,7 @@ class DissimilarityMatrix:
             
         # calculate the pairwise distances between data point and convert it
         # to square distance matrix
-        distmat = squareform(pdist(self.X, metric=metric, **kwargs))
+        distmat = squareform(pdist(self.X[:, col1:col2], metric=metric, **kwargs))
 
         return distmat
     
