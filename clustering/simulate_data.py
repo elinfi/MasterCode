@@ -1,7 +1,9 @@
 import numpy as np
 
-class SimulateData:
-    def __init__(self, resolution, region, n):
+from data_preparation import DataPreparation
+
+class SimulateData():
+    def __init__(self, resolution, region):
         """
         Simulate Hi-C data.
         
@@ -15,14 +17,13 @@ class SimulateData:
             matrix (ndarray):
                 Numpy zeroes array.
         """
-        self.resolutioin = resolution
+        self.resolution = resolution
         self.region = region
-        self.n = n
-        self.matrix = self.create_matrix(resolution, region)
+        self.clr, self.matrix = self.initial_matrix(resolution, region)
         
-    def create_matrix(self, resolution, region):
+    def initial_matrix(self, resolution, region):
         """
-        Creates empty matrix filled with zeroes.
+        Creates a matrix with background noise.
         
         Args:
             resolution (int):
@@ -33,10 +34,20 @@ class SimulateData:
                 
         Returns:
             matrix (ndarray):
-                Zeroes numpy array.
+                Matrix with the remaining noise difference from the two 
+                replicates wild type 001 and wild type 002.
         """
-        n = self.n
-        matrix = np.zeros((n, n))
+        path_wt_001 = '/home/elinfi/coolers/HiC_wt_001.mcool'
+        path_wt_002 = '/home/elinfi/coolers/HiC_wt_002.mcool'
         
-    def fill_diag(self):
+        wt_001 = DataPreparation(path_wt_001, resolution, region)
+        wt_002 = DataPreparation(path_wt_002, resolution, region)
+        
+        matrix = wt_002.subtract(wt_001)
+        
+        return wt_001.clr, matrix
+    
+    
+        
+    
         
