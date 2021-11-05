@@ -4,7 +4,7 @@ import numpy as np
 
 
 class DataPreparation:
-    def __init__(self, filename, resolution, region):
+    def __init__(self, filename, resolution, region, balance=True):
         """
         Transform HiC data on .mcool format to 2D numpy arrays for further analysis.
 
@@ -16,10 +16,16 @@ class DataPreparation:
             region  (string): 
                 Genomic range string of the style {chrom}:{start}-{end}, unit 
                 prefixes k, M, G are supported
+            balance (bool, optional):
+                default=True, whether to balance data or not
+        Attr:
+            matrix (ndarray):
+                Matrix of HiC data for given resolution and region
         """
         self.filename = filename
         self.resolution = resolution
         self.region = region
+        self.clr, self.matrix = self.create_matrix(balance)
         
     def create_matrix(self, balance=True):
         """
@@ -33,11 +39,11 @@ class DataPreparation:
             matrix (ndarray):
                 Matrix of HiC data for given resolution and region
         """
-        self.clr = cooler.Cooler(self.filename
-                                 + '::resolutions/'
-                                 + str(self.resolution))
-        self.matrix = self.clr.matrix(balance=balance).fetch(self.region)
-        return self.matrix
+        clr = cooler.Cooler(self.filename
+                            + '::resolutions/'
+                            + str(self.resolution))
+        matrix = clr.matrix(balance=balance).fetch(self.region)
+        return clr, matrix
 
     def divide(self, other, replace_zero_zero=False):
         """
