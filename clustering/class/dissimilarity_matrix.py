@@ -4,6 +4,7 @@ import numpy as np
 import numpy.ma as ma
 
 from numba import jit
+from scipy.sparse import csr_matrix
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics import pairwise_distances
 from sklearn.preprocessing import MinMaxScaler
@@ -157,7 +158,7 @@ class DissimilarityMatrix:
         d2 = abs(v[0] - v[1])
         
         dist = abs(d1 - d2)/self.n
-        return dist
+        return np.log10(dist)
     
     def manhattan(self, u, v):
         """Calculates the scaled manahattan distance between u and v.
@@ -223,7 +224,7 @@ class DissimilarityMatrix:
 
         # calculate the pairwise distances between data point and convert it
         # to square distance matrix
-        distmat = pairwise_distances(self.X, metric=metric, force_all_finite=False, 
+        distmat = pairwise_distances(csr_matric(self.X), metric=metric, force_all_finite=False, 
                                      n_jobs=-1, **kwargs)
         
         return distmat
