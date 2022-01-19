@@ -95,6 +95,30 @@ class DataPreparation:
             
         diff = self.matrix - other.matrix
         return diff
+    
+    def relative_difference(self, other):
+        """Calculates the relative difference between two Hi-C contact matrices.
+        
+        Let x and y be pairwise matrix elements. Then the relative difference
+        is calculated by
+            (x - y)/( (x + y)/2 ).
+
+        Args:
+            other (class instance): 
+                Instance of class DataPreparation
+
+        Return:
+            diff (array):
+                The two matrices divided
+        """
+        if not hasattr(self, 'matrix'):
+            self.create_matrix()
+        elif not hasattr(other, 'matrix'):
+            other.create_matrix()
+        
+        mean = (self.matrix - other.matrix)/2
+        diff = (self.matrix - other.matrix)/mean
+        return diff
 
     def raw_data(self):
         """
