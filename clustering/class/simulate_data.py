@@ -1,3 +1,8 @@
+"""Simulation of Hi-C data
+
+Creates empty matrix with background noise.
+"""
+
 import numpy as np
 
 from data_preparation import DataPreparation
