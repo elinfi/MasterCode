@@ -1,3 +1,15 @@
+"""Calculates statistics for the final clusters. 
+
+Diagonal distance:
+    Calculates the average distance from the diagonal for within each cluster.
+    
+Interactions mean:
+    Calculates the mean number of interactions within each cluster.
+    
+Cluster mean:
+    Calculates the average metric distance for each cluster.
+"""
+
 import numpy as np
 
 class ClusterStatistics:

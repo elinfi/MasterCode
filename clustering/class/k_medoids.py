@@ -79,7 +79,7 @@ class KMedoids(DissimilarityMatrix):
         return labels_mat
     
     def labels4plotting_nan(self, n, triu_nan_idx):
-        """Convert cluster labels to 2d matrix for plotting.
+        """Convert cluster labels to 2d matrix for plotting. Insert removed NaN.
         
         Args:
             n (int):
@@ -113,7 +113,7 @@ class KMedoids(DissimilarityMatrix):
         labels_mat[upper_triag_idx] = labels_nan_list
         
         labels_mat = labels_mat + labels_mat.T
-        labels_mat[np.diag_indices(n)] /= 2 # diagonal elements added twice
+        labels_mat[np.diag_indices(n)] /= 2 # diagonal elements were added twice
         
         self.labels_list = labels_list
         self.labels_nan_list = labels_nan_list
