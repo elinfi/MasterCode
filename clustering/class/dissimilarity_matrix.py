@@ -22,24 +22,44 @@ class DissimilarityMatrix:
                 Square symmetric matrix containing the Hi-C data to cluster
             metric {'euclidean', 'test_euclidean'}:
                 Which metric to use when calculating the dissimilarity matrix
+            remove_nan (boolean):
+                True when removing NaN's, False when keeping NaN's
+            scaler ():
+                
         Attributes:
             n (int):
                 Length of data matrix
+            triu_idx (array):
+                indices for upper triangular matrix of n x n matrix
+            nan_idx (boolean array):
+                boolean matrix where all NaN's in data are true
+            nan_idx_triu (array):
+                upper triangular matrix of nan_idx
             X (ndarray):
                 n x 3 array containing the bin1 and bin2 in the first two
                 columns and the number of interactions in the last column
         """
         self.data = data
+        self.remove_nan = remove_nan
+        self.scaler = scaler
+        
+        # get shape of data matrix
         self.n = data.shape[0]
         
+        # get indexes for upper triangular matrix of n x n matrix
+        self.triu_idx = np.triu_indices(self.n)
+        
+        # get boolean matrix with true for all NaN's
+        self.nan_idx = np.isnan(self.data)
+        
+        # get upper triangluar matrix of boolean NaN matrix
+        self.nan_idx_triu = self.nan_idx[self.triu_idx]
+        
         # transform data
-        if remove_nan:
-            self.X = self.transform_data_nan(scaler)
-        else:
-            self.X = self.transform_data(scaler)
+        self.X = self.transform_data()
             
-    def transform_data_nan(self, scaler=None):
-        """Extract the upper triangular of the data matrix.
+    def transform_data(self):
+        """Extract the upper triangular of the data matrix and removes all NaN.
 
         Return:
             X (ndarray):
@@ -50,21 +70,22 @@ class DissimilarityMatrix:
         #assert log_scale in [None, 'log2', 'log10', 'MinMax'], 'Only None, 2 or 10 are valid log scales'
             
         n = self.n
-        self.triu_idx = np.triu_indices(n)
-        self.nan_idx = np.isnan(self.data)
-        self.triu_nan_idx = self.nan_idx[self.triu_idx]
-
+        
         # create 2d coordinate system in 1d of the upper triangular matrix
         xy = np.ones((n, n))*np.linspace(0, n-1, n) 
         x = xy.T[self.triu_idx]
-        x = x[~self.triu_nan_idx]
         y = xy[self.triu_idx]
-        y = y[~self.triu_nan_idx]
         
         # extract the upper triangular matrix of data into a flat array      
         z = self.data[self.triu_idx]
-        z = z[~self.triu_nan_idx]
-        if scaler:
+        
+        if self.remove_nan:
+            # remove NaN's
+            x = x[~self.nan_idx_triu]
+            y = y[~self.nan_idx_triu]
+            z = z[~self.nan_idx_triu]
+        
+        if self.scaler:
             scaler.fit(z.reshape(1, -1))
             z_scaled = scaler.transform(z.reshape(1, -1))
             z = z_scaled[0, :]
@@ -78,44 +99,53 @@ class DissimilarityMatrix:
         X = np.array([x, y, z]).T
 
         return X
- 
-    def transform_data(self, scaler=None):
-        """Extract the upper triangular of the data matrix.
-
-        Return:
-            X (ndarray):
-                n x 3 array containing the row indices in the first column,
-                column indices in the second colum and the number of 
-                interactions in the last column.
+    
+    def scipy_dist(self, metric, col1, col2, **kwargs):
         """
-        #assert log_scale in [None, 'log2', 'log10', 'MinMax'], 'Only None, 2 or 10 are valid log scales'
-            
-        n = self.n
-        triu_idx = np.triu_indices(n)
-
-        # create 2d coordinate system in 1d of the upper triangular matrix
-        xy = np.ones((n, n))*np.linspace(0, n-1, n)
-        x = xy.T[triu_idx]
-        y = xy[triu_idx]
+        Computes the distance matrix using scipy.pdist with a given metric.
         
-        # extract the upper triangular matrix of data into a flat array      
-        z = self.data[triu_idx]
-        if scaler:
-            scaler.fit(z.reshape(1, -1))
-            z_scaled = scaler.transform(z.reshape(1, -1))
-            z = z_scaled[0, :]
-        #if log_scale == 2:
-        #    z = np.log2(z)
-        #elif log_scale == 10:
-        #    z = np.log10(z)
+        Args:
+            metric {'row_col_dist'}:
+                Which metric to use when calculating the dissimilarity matrix
+        Return:
+            distmat (array):
+                Distance matrix on square form
+        """
+        metric = "_" + metric
+        if hasattr(self, metric):
+            # call metric function
+            metric = getattr(self, metric)
             
+        # calculate the pairwise distances between data point and convert it
+        # to square distance matrix
+        distmat = squareform(pdist(self.X[:, col1:col2], metric=metric, **kwargs))
 
-        # create matrix with x, y, z as columns
-        X = np.array([x, y, z]).T
-
-        return X
+        return distmat
+    
+    def sklearn_dist(self, metric, scaler=None, **kwargs):
+        """
+        Computes the distance matrix using sklearn.pairwise_distances.
         
-    def interactions_dist(self, u, v):
+        Args:
+            metric {'euclidean', 'test_euclidean'}:
+                Which metric to use when calculating the dissimilarity matrix
+        Returns:
+            distmat (array):
+                Distance matrix on square form
+        """
+        metric = "_" + metric
+        if hasattr(self, metric):
+            # call metric function
+            metric = getattr(self, metric)
+
+        # calculate the pairwise distances between data point and convert it
+        # to square distance matrix
+        distmat = pairwise_distances(self.X, metric=metric, force_all_finite=False, 
+                                     n_jobs=-1, **kwargs)
+        
+        return distmat
+        
+    def _interactions_dist(self, u, v):
         """Calculates the difference in number of interactions.
         
         Calculates the difference in number of interactions given by
@@ -134,7 +164,7 @@ class DissimilarityMatrix:
         dist = abs(u[2] - v[2])
         return dist
         
-    def diagonal_dist(self, u, v):
+    def _diagonal_dist(self, u, v):
         """Calculates the scaled difference in distance from the main diagonal.
         
         Calculates the scaled  difference in distance from the main diagonal 
@@ -159,7 +189,7 @@ class DissimilarityMatrix:
         dist = abs(d1 - d2)/self.n
         return dist
     
-    def manhattan(self, u, v):
+    def _manhattan(self, u, v):
         """Calculates the scaled manahattan distance between u and v.
         
         Calculates the scaled manhattan distance between u and v given by
@@ -179,54 +209,13 @@ class DissimilarityMatrix:
         dist = (abs(u[0] - v[0]) + abs(u[1] - v[1]))/(2*self.n)
         return dist
     
-    def diag_3d_dist(self, u, v):
+    def _diag_3d_dist(self, u, v):
         d1 = np.sqrt((u[0] - u[1])**2/(2*self.n) + u[2]**2)
         d2 = np.sqrt((v[0] - v[1])**2/(2*self.n) + v[2]**2)
         
         dist = abs(d1 - d2)
           
-    def scipy_dist(self, metric, col1, col2, **kwargs):
-        """
-        Computes the distance matrix using scipy.pdist with a given metric.
-        
-        Args:
-            metric {'row_col_dist'}:
-                Which metric to use when calculating the dissimilarity matrix
-        Return:
-            distmat (array):
-                Distance matrix on square form
-        """
-        if hasattr(self, metric):
-            # call metric function
-            metric = getattr(self, metric)
-            
-        # calculate the pairwise distances between data point and convert it
-        # to square distance matrix
-        distmat = squareform(pdist(self.X[:, col1:col2], metric=metric, **kwargs))
-
-        return distmat
     
-    def sklearn_dist(self, metric, scaler=None, **kwargs):
-        """
-        Computes the distance matrix using sklearn.pairwise_distances.
-        
-        Args:
-            metric {'euclidean', 'test_euclidean'}:
-                Which metric to use when calculating the dissimilarity matrix
-        Returns:
-            distmat (array):
-                Distance matrix on square form
-        """
-        if hasattr(self, metric):
-            # call metric function
-            metric = getattr(self, metric)
-
-        # calculate the pairwise distances between data point and convert it
-        # to square distance matrix
-        distmat = pairwise_distances(self.X, metric=metric, force_all_finite=False, 
-                                     n_jobs=-1, **kwargs)
-        
-        return distmat
 
 
 if __name__ == '__main__':
