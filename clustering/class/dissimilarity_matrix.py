@@ -111,10 +111,9 @@ class DissimilarityMatrix:
             distmat (array):
                 Distance matrix on square form
         """
-        metric = "_" + metric
-        if hasattr(self, metric):
+        if hasattr(self, "_" + metric):
             # call metric function
-            metric = getattr(self, metric)
+            metric = getattr(self, "_" + metric)
             
         # calculate the pairwise distances between data point and convert it
         # to square distance matrix
@@ -133,10 +132,9 @@ class DissimilarityMatrix:
             distmat (array):
                 Distance matrix on square form
         """
-        metric = "_" + metric
-        if hasattr(self, metric):
+        if hasattr(self, "_" + metric):
             # call metric function
-            metric = getattr(self, metric)
+            metric = getattr(self, "_" + metric)
 
         # calculate the pairwise distances between data point and convert it
         # to square distance matrix
