@@ -102,7 +102,9 @@ class DataPreparation:
         Let x and y be pairwise matrix elements. Then the relative difference
         is calculated by
             (x - y)/( (x + y)/2 ).
-
+        x and y are equal when the relative difference is 0. When both x and y
+        are 0, the mean ( (x + y)/2 ) is set to 1 to ensure the result is 0.
+        
         Args:
             other (class instance): 
                 Instance of class DataPreparation
@@ -116,7 +118,13 @@ class DataPreparation:
         elif not hasattr(other, 'matrix'):
             other.create_matrix()
         
+        # calculate the average IF
         mean = (self.matrix - other.matrix)/2
+        
+        # make sure that pairs where both IF are zero returns 0
+        mean[mean == 0] = 1
+        
+        # calculate the relative difference
         diff = (self.matrix - other.matrix)/mean
         return diff
 
