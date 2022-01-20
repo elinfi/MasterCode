@@ -119,7 +119,7 @@ class DataPreparation:
             other.create_matrix()
         
         # calculate the average IF
-        mean = (self.matrix - other.matrix)/2
+        mean = (self.matrix + other.matrix)/2
         
         # make sure that pairs where both IF are zero returns 0
         mean[mean == 0] = 1
