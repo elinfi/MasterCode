@@ -44,11 +44,13 @@ class DataPreparation:
                             + str(self.resolution))
         matrix = clr.matrix(balance=balance).fetch(self.region)
         return clr, matrix
-
-    def divide(self, other, replace_zero_zero=False):
-        """
-        Calculates the difference between two Hi-C maps by division.
-
+    
+    def higlass_ratio(self, other, replace_zero_zero=False):
+        """Calculates the difference between two Hi-C maps by division.
+        
+        The calculations are done in the same way as in HiGlass' divide by.
+        All division by zero is set to NaN.
+        
         Args:
             other (class instance): 
                 Instance of class DataPreparation
@@ -63,17 +65,29 @@ class DataPreparation:
             self.create_matrix()
         elif not hasattr(other, 'matrix'):
             other.create_matrix()
+            
+        # replaces all zeros in denominator to NaN to ensure no division by zero
+        other.matrix[other.matrix == 0] = np.nan
         
         diff = self.matrix/other.matrix
+        
+        # add pseudocount - the smallest value in diff
+        #diff += np.nanmin(diff)
         
         if replace_zero_zero:
             # find all 0/0
             sum_data = self.matrix + other.matrix
-            zero_zero = sum_data == 0
 
             # set all 0/0 to 1
-            diff[zero_zero] = 1
-            
+            diff[sum_data == 0] = 1
+        
+        return diff
+    
+    def divide_with_pseudocount(self, other, pseudocount=1):
+        pseudo_mat = np.ones(self.matrix.shape)*pseudocount
+        
+        diff = (self.matrix + pseudo_mat) / (other.matrix + pseudo_mat)
+        
         return diff
     
     def subtract(self, other):
@@ -102,7 +116,9 @@ class DataPreparation:
         Let x and y be pairwise matrix elements. Then the relative difference
         is calculated by
             (x - y)/( (x + y)/2 ).
-
+        x and y are equal when the relative difference is 0. When both x and y
+        are 0, the mean ( (x + y)/2 ) is set to 1 to ensure the result is 0.
+        
         Args:
             other (class instance): 
                 Instance of class DataPreparation
@@ -116,7 +132,13 @@ class DataPreparation:
         elif not hasattr(other, 'matrix'):
             other.create_matrix()
         
-        mean = (self.matrix - other.matrix)/2
+        # calculate the average IF
+        mean = (self.matrix + other.matrix)/2
+        
+        # make sure that pairs where both IF are zero returns 0
+        mean[mean == 0] = 1
+        
+        # calculate the relative difference
         diff = (self.matrix - other.matrix)/mean
         return diff
 
