@@ -71,6 +71,9 @@ class DataPreparation:
         
         diff = self.matrix/other.matrix
         
+        # add pseudocount - the smallest value in diff
+        #diff += np.nanmin(diff)
+        
         if replace_zero_zero:
             # find all 0/0
             sum_data = self.matrix + other.matrix
