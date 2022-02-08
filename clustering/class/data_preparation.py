@@ -44,11 +44,13 @@ class DataPreparation:
                             + str(self.resolution))
         matrix = clr.matrix(balance=balance).fetch(self.region)
         return clr, matrix
-
-    def divide(self, other, replace_zero_zero=False):
-        """
-        Calculates the difference between two Hi-C maps by division.
-
+    
+    def higlass_ratio(self, other, replace_zero_zero=False):
+        """Calculates the difference between two Hi-C maps by division.
+        
+        The calculations are done in the same way as in HiGlass' divide by.
+        All division by zero is set to NaN.
+        
         Args:
             other (class instance): 
                 Instance of class DataPreparation
@@ -63,17 +65,26 @@ class DataPreparation:
             self.create_matrix()
         elif not hasattr(other, 'matrix'):
             other.create_matrix()
+            
+        # replaces all zeros in denominator to NaN to ensure no division by zero
+        other.matrix[other.matrix == 0] = np.nan
         
         diff = self.matrix/other.matrix
         
         if replace_zero_zero:
             # find all 0/0
             sum_data = self.matrix + other.matrix
-            zero_zero = sum_data == 0
 
             # set all 0/0 to 1
-            diff[zero_zero] = 1
-            
+            diff[sum_data == 0] = 1
+        
+        return diff
+    
+    def divide_with_pseudocount(self, other, pseudocount=1):
+        pseudo_mat = np.ones(self.matrix.shape)*pseudocount
+        
+        diff = (self.matrix + pseudo_mat) / (other.matrix + pseudo_mat)
+        
         return diff
     
     def subtract(self, other):
