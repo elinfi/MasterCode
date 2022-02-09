@@ -4,6 +4,7 @@ Creates empty matrix with background noise.
 """
 
 import numpy as np
+import pyranges as pr
 
 from data_preparation import DataPreparation
 
@@ -53,6 +54,10 @@ class SimulateData():
         return wt_001.clr, matrix
     
     
-        
+    def extract_tads(self):
+        # bed-file containing TAD positions for wild type merged
+        filename = '/home/elinfi/storage/master_project/processed_data/tads/' \
+                   + 'HiC_wt_merged_normalized_and_corrected_ice_domains.bed'
     
         
+        df = pr.read_bed(filename, as_df=True)
