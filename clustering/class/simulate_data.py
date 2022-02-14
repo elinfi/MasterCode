@@ -1,3 +1,4 @@
+
 """Simulation of Hi-C data
 
 Creates empty matrix with background noise.
@@ -116,6 +117,8 @@ def noise_matrix(resolution, region, method='ratio'):
         matrix = wt_002.higlass_ratio(wt_001)
     elif method == 'reldiff':
         matrix = wt_002.relative_difference(wt_001)
+    elif method == 'subtract':
+        matrix = wt_002.subtract(wt_001)
     else:
         raise NameError("The method is not valid. Use 'ratio' or 'reldiff'")
 
@@ -226,7 +229,7 @@ class SimulateData():
         
     def add_tad(self):
         region = pick_tad(self.max_range)
-        tad = get_tad(region, self.resolution)
+        tad = get_tad(region, self.resolution)     
 
         tad_size = tad.shape[0]
         max_idx = self.noise.shape[0] - tad_size
@@ -247,7 +250,7 @@ class SimulateData():
         else:
             raise NameError("The method is not valid. Use 'ratio' or 'reldiff'")
             
-        final =self.noise + diff
+        final = self.noise + diff
         
         return final
         
