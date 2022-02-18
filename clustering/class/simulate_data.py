@@ -27,8 +27,10 @@ class SimulateData():
             matrix (ndarray):
                 Numpy zeroes array.
         """
-        self.mat_region = sim.get_region(max_range)
-        self.tad_region = sim.get_tad_region(self.mat_region)
+        #self.mat_region = sim.get_region(max_range)
+        self.mat_region = 'chr8:85013332-95013332'
+        #self.tad_region = sim.get_tad_region(self.mat_region)
+        self.tad_region = 'chr8:86550000-87600000'
         
         self.mat1 = sim.matrix(self.mat_region, 'wt_001', resolution)
         self.mat2 = sim.matrix(self.mat_region, 'wt_002', resolution)
