@@ -27,16 +27,15 @@ class SimulateData():
             matrix (ndarray):
                 Numpy zeroes array.
         """
-        clr = sim.cooler_obj(resolution)
         self.mat_region = sim.get_region(max_range)
         self.tad_region = sim.get_tad_region(self.mat_region)
         
-        self.mat1 = sim.matrix(clr, self.mat_region)
-        self.mat2 = self.mat1.copy()
+        self.mat1 = sim.matrix(self.mat_region, 'wt_001', resolution)
+        self.mat2 = sim.matrix(self.mat_region, 'wt_002', resolution)
         
-        self.tad_i, self.tad_j = sim.get_tad_idx(clr, 
-                                                 self.mat_region, 
-                                                 self.tad_region)
+        self.tad_i, self.tad_j = sim.get_tad_idx(self.mat_region, 
+                                                 self.tad_region,
+                                                 resolution)
     
     def change_tad(self, change):
         """Change TAD in mat2
