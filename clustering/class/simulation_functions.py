@@ -122,14 +122,16 @@ def get_tad_region(region):
     region = concat_region(chrom, start, end)
     return region
 
-def cooler_obj(resolution):
-    filename = '/home/elinfi/coolers/HiC_wt_merged.mcool'
+def cooler_obj(filename, resolution):
     clr = cooler.Cooler(filename
                         + '::resolutions/'
                         + str(resolution))    
     return clr
 
-def get_tad_idx(clr, mat_region, tad_region):
+def get_tad_idx(mat_region, tad_region, resolution):
+    filename = '/home/elinfi/coolers/HiC_wt_merged.mcool'
+    clr = cooler_obj(filename, resolution)
+    
     mat_extent = clr.extent(mat_region)
     tad_extent = clr.extent(tad_region)
     
@@ -138,7 +140,9 @@ def get_tad_idx(clr, mat_region, tad_region):
     
     return tad_i, tad_j
 
-def matrix(clr, region):
+def matrix(region, replicate, resolution):
+    filename = '/home/elinfi/coolers/HiC_' + replicate + '.mcool'
+    clr = cooler_obj(filename, resolution)
     matrix = clr.matrix(balance=True).fetch(region)
     
     return matrix
