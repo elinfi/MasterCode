@@ -3,8 +3,8 @@ import numpy as np
 def no_change(x):
     return x
 
-def constant(x):
-    y = 4*x
+def constant(x, k):
+    y = k*x
     return y
 
 def change_with_noise(x):
