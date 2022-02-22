@@ -167,8 +167,6 @@ def get_tad_idx(mat_region, tad_region, resolution):
     
     mat_extent = clr.extent(mat_region)
     tad_extent = clr.extent(tad_region)
-    print(mat_extent)
-    print(tad_extent)
     
     tad_i = tad_extent[0] - mat_extent[0]
     tad_j = tad_extent[1] - mat_extent[0]
