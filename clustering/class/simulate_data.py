@@ -1,4 +1,3 @@
-
 """Simulation of Hi-C data
 
 Creates empty matrix with background noise.
@@ -38,7 +37,7 @@ class SimulateData():
         self.mat1 = sim.matrix(self.mat_region, 'wt_001', self.resolution)
         self.mat2 = sim.matrix(self.mat_region, 'wt_002', self.resolution)
     
-    def change_tad(self, change, n=1, random_state=None):
+    def change_tad(self, change, n=1, random_state=None, **kwargs):
         """Change TAD in mat2
         
         Args:
@@ -53,18 +52,11 @@ class SimulateData():
                                    tad_region,
                                    self.resolution)
 
-            self.mat2[i:j, i:j] = change(self.mat2[i:j, i:j])
-        """
-        tad_region = tad_regions[0]
-        i, j = sim.get_tad_idx(self.mat_region, 
-                               tad_region,
-                               self.resolution)
-        """
-        self.mat2[i:j, i:j] = change(self.mat2[i:j, i:j])
+            self.mat2[i:j, i:j] = change(self.mat2[i:j, i:j], **kwargs)
+
             
-    def change_tad_tad(self, change, random_state=None):
+    def change_tad_tad(self, change, random_state=None, **kwargs):
         tad_regions = sim.df2tad(self.df, 2, random_state)
-        print(tad_regions)
         
         i1, j1 = sim.get_tad_idx(self.mat_region, 
                                  tad_regions[0],
@@ -72,10 +64,9 @@ class SimulateData():
         i2, j2 = sim.get_tad_idx(self.mat_region, 
                                  tad_regions[1],
                                  self.resolution)
-        print(i1, j1)
-        print(i2, j2)
-        self.mat2[i1:j1, i2:j2] = change(self.mat2[i1:j1, i2:j2])
-        self.mat2[i2:j2, i1:j1] = change(self.mat2[i2:j2, i1:j1])
+
+        self.mat2[i1:j1, i2:j2] = change(self.mat2[i1:j1, i2:j2], **kwargs)
+        self.mat2[i2:j2, i1:j1] = change(self.mat2[i2:j2, i1:j1], **kwargs)
         
     def compare(self, method):
         if method == 'ratio':
@@ -86,6 +77,9 @@ class SimulateData():
             raise NameError("The method is not valid. Use 'ratio' or 'reldiff'")
         
         return diff
+    
+    def write2file(self, filename, matrix):
+        np.save(filename, matrix)
         
     
         
