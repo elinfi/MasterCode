@@ -2,6 +2,7 @@ import re
 import cooler
 
 import numpy as np
+import pandas as pd
 import pyranges as pr
 
 def concat_region(chromosome, start, end):
@@ -28,6 +29,7 @@ def split_region(region):
     start, end = int(start), int(end)
     
     return chrom, start, end
+
 
 def get_region_with_ntads(max_range, ntads):
     """Check that random region of size max_range contains at least ntads TADs.
@@ -75,6 +77,63 @@ def get_region(max_range):
     region = concat_region(chrom, start, end)
     
     return region
+
+
+
+def cooler_obj(filename, resolution):
+    clr = cooler.Cooler(filename
+                        + '::resolutions/'
+                        + str(resolution))    
+    return clr
+
+
+
+def matrix(region, replicate, resolution):
+    filename = '/home/elinfi/coolers/HiC_' + replicate + '.mcool'
+    clr = cooler_obj(filename, resolution)
+    matrix = clr.matrix(balance=True).fetch(region)
+    
+    return matrix
+
+def random_chromosome():
+    """Extract random chromosome and corresponding chromosome size.
+    
+    Returns:
+        chromosome (string):
+            Chromosome name.
+        size (int):
+            Corresponding chromosome size.
+    """
+    # data frame with chromosome sizes
+    df = df_chromsizes()
+    
+    # random index
+    idx = np.random.randint(0, len(df))
+    
+    # get chromosome name and corresponding size
+    chromosome = df.index[idx]
+    size = df[idx]
+    
+    return chromosome, size
+
+def df_chromsizes():
+    """Extract chromosome sizes as pandas series.
+    
+    Args:
+    
+    Returns:
+        df (pandas series):
+            Dataframe containing all chromosome names and corresponding sizes.
+    """
+    filename = '/home/elinfi/coolers/HiC_wt_001_1000.cool'
+    
+    # get dataframe containing chromosome sizes
+    df = cooler.Cooler(filename).chromsizes
+    
+    return df
+
+
+
 
 def tad_df():
     """Extract tad dataframe from bed file.
@@ -129,14 +188,14 @@ def find_tads(region):
 
 def df2tad(df, n=1, random_state=None):
     # choose random tad within given genomic range
-    tad = df.sample(n=n, random_state=random_state)
-    tad = tad.sort_values(['Start'])
+    tads = df.sample(n=n, random_state=random_state)
+    tads = tads.sort_values(['Start'])
        
     tad_regions = []
-    for i in range(tad.shape[0]):
-        chrom = tad['Chromosome'].values[i]
-        start = tad['Start'].values[i]
-        end = tad['End'].values[i]
+    for i in range(tads.shape[0]):
+        chrom = tads['Chromosome'].values[i]
+        start = tads['Start'].values[i]
+        end = tads['End'].values[i]
         
         tad_region = concat_region(chrom, start, end)
         tad_regions.append(tad_region)
@@ -155,12 +214,6 @@ def region2tad(region):
     
     return tad_region
 
-def cooler_obj(filename, resolution):
-    clr = cooler.Cooler(filename
-                        + '::resolutions/'
-                        + str(resolution))    
-    return clr
-
 def get_tad_idx(mat_region, tad_region, resolution):
     filename = '/home/elinfi/coolers/HiC_wt_merged.mcool'
     clr = cooler_obj(filename, resolution)
@@ -173,46 +226,45 @@ def get_tad_idx(mat_region, tad_region, resolution):
     
     return tad_i, tad_j
 
-def matrix(region, replicate, resolution):
-    filename = '/home/elinfi/coolers/HiC_' + replicate + '.mcool'
-    clr = cooler_obj(filename, resolution)
-    matrix = clr.matrix(balance=True).fetch(region)
+def loop_df():
+    filename = '/home/elinfi/coolers/HiC_wt_merged_8000.postproc.bedpe'
+    df = pd.read_table(filename)
     
-    return matrix
-
-def random_chromosome():
-    """Extract random chromosome and corresponding chromosome size.
-    
-    Returns:
-        chromosome (string):
-            Chromosome name.
-        size (int):
-            Corresponding chromosome size.
-    """
-    # data frame with chromosome sizes
-    df = df_chromsizes()
-    
-    # random index
-    idx = np.random.randint(0, len(df))
-    
-    # get chromosome name and corresponding size
-    chromosome = df.index[idx]
-    size = df[idx]
-    
-    return chromosome, size
-
-def df_chromsizes():
-    """Extract chromosome sizes as pandas series.
-    
-    Args:
-    
-    Returns:
-        df (pandas series):
-            Dataframe containing all chromosome names and corresponding sizes.
-    """
-    filename = '/home/elinfi/coolers/HiC_wt_001_1000.cool'
-    
-    # get dataframe containing chromosome sizes
-    df = cooler.Cooler(filename).chromsizes
+    # Remove unecessary columns
+    df.drop(df.columns[6:], axis=1, inplace=True)
     
     return df
+
+def find_loop(region):
+    # split genomic range string
+    chrom, start, end = split_region(region)
+    
+    # get loop dataframe
+    df = loop_df()
+    
+    df = df.loc[df['chrom1'] == chrom]
+    df = df.loc[df['start1'] >= start]
+    df = df.loc[df['end2'] <= end]
+    print(df.shape[0])
+    return df
+
+def df2loop(df, n=1, random_state=None):
+    loops = df.sample(n=n, random_state=random_state)
+    loops = loops.sort_values(['start1'])
+    
+    loop_regions = []
+    for i in range(loops.shape[0]):
+        chrom1 = loops['chrom1'].values[i]
+        start1 = loops['start1'].values[i]
+        end1 = loops['end1'].values[i]
+        
+        chrom2 = loops['chrom2'].values[i]
+        start2 = loops['start2'].values[i]
+        end2 = loops['end2'].values[i]
+        
+        loop1 = concat_region(chrom1, start1, end1)
+        loop2 = concat_region(chrom2, start2, end2)
+        
+        loop_regions.append((loop1, loop2))
+    
+    return loop_regions
