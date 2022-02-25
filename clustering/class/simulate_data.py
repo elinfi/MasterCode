@@ -29,7 +29,7 @@ class SimulateData():
                 Numpy zeroes array.
         """
         self.resolution = resolution
-        self.mat_region, self.df = sim.get_region_with_ntads(max_range, ntads)
+        self.mat_region, self.tad_df = sim.get_region_with_ntads(max_range, ntads)
         #self.mat_region = 'chr8:85013332-95013332'
         #self.tad_region = sim.get_tad_region(self.mat_region)
         #self.tad_region = 'chr8:86550000-87600000'
@@ -45,7 +45,7 @@ class SimulateData():
                 Function for how to change the TAD.
                 Example of function for doubling IF in TAD: lambda x: 2*x
         """
-        tad_regions = sim.df2tad(self.df, 1, random_state)
+        tad_regions = sim.df2tad(self.tad_df, 1, random_state)
         
         for tad_region in tad_regions:
             i, j = sim.get_tad_idx(self.mat_region, 
@@ -56,7 +56,14 @@ class SimulateData():
 
             
     def change_tad_tad(self, change, random_state=None, **kwargs):
-        tad_regions = sim.df2tad(self.df, 2, random_state)
+        """Change TAD-TAD interactions in mat2.
+        
+        Args:
+            change (function):
+                Function for how to change the TAD.
+                Example of function for doubling IF in TAD: lambda x: 2*x
+        """
+        tad_regions = sim.df2tad(self.tad_df, 2, random_state)
         
         i1, j1 = sim.get_tad_idx(self.mat_region, 
                                  tad_regions[0],
@@ -67,6 +74,23 @@ class SimulateData():
 
         self.mat2[i1:j1, i2:j2] = change(self.mat2[i1:j1, i2:j2], **kwargs)
         self.mat2[i2:j2, i1:j1] = change(self.mat2[i2:j2, i1:j1], **kwargs)
+        
+    def change_loop(self, change, n=1, random_state=None, **kwargs):
+        df = sim.find_loop(self.mat_region)
+        
+        loops = sim.df2loop(df, n=n, random_state=random_state)
+        print(len(loops))
+        for i in range(len(loops)):
+            i1, j1 = sim.get_tad_idx(self.mat_region,
+                                     loops[i][0],
+                                     self.resolution)
+            i2, j2 = sim.get_tad_idx(self.mat_region,
+                                     loops[i][1],
+                                     self.resolution)
+            
+            self.mat2[i1:j1, i2:j2] = change(self.mat2[i1:j1, i2:j2], **kwargs)
+            self.mat2[i2:j2, i1:j1] = change(self.mat2[i2:j2, i1:j1], **kwargs)
+            
         
     def compare(self, method):
         if method == 'ratio':
