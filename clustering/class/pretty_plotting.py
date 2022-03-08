@@ -1,3 +1,5 @@
+import re 
+
 import simulation_functions as sim
 import matplotlib.pyplot as plt
 
@@ -13,9 +15,30 @@ def format_ticks(ax, x=True, y=True, rotate=True):
     if rotate:
         ax.tick_params(axis='x',rotation=45)
     return None
-      
+
+def get_range(region):
+    prefixes = {'k':1e3, 'M':1e6, 'G':1e9}
+    
+    try:
+        num_region = int(region)
+    except ValueError:
+        value = re.match("\d+", region).group()
+        prefix = re.search(r"[a-zA-Z]", region).group()
+        num_region = int(float(value)*prefixes[prefix])
+        
+    return num_region
+        
+
+def split_region(region):
+    chrom, start, end = re.split("\W+", region)
+    
+    start = get_range(start)
+    end = get_range(end)
+    
+    return chrom, start, end
+
 def region2extent(region):
-    chrom, start, end = sim.split_region(region)
+    chrom, start, end = split_region(region)
     
     extent = (start, end, end, start)
     
