@@ -12,7 +12,7 @@ import simulation_functions as sim
 from data_preparation import DataPreparation
 
 
-class SimulateData():
+class SimulateDataRandom():
     def __init__(self, resolution, max_range, ntads):
         """
         Simulate Hi-C data.
@@ -30,9 +30,14 @@ class SimulateData():
         """
         self.resolution = resolution
         self.mat_region, self.tad_df = sim.get_region_with_ntads(max_range, ntads)
-        #self.mat_region = 'chr8:85013332-95013332'
+        print(self.tad_df.shape)
+        #self.mat_region = 'chr8:85013332-90013332'
         #self.tad_region = sim.get_tad_region(self.mat_region)
         #self.tad_region = 'chr8:86550000-87600000'
+        #self.mat_region = 'chr9:26947588-29947588'
+        
+        self.mat_region = 'chr10:6351511-10351511'
+        #chr10:58328963-62328963
         
         self.mat1 = sim.matrix(self.mat_region, 'wt_001', self.resolution)
         self.mat2 = sim.matrix(self.mat_region, 'wt_002', self.resolution)
@@ -77,6 +82,7 @@ class SimulateData():
         
     def change_loop(self, change, n=1, random_state=None, **kwargs):
         df = sim.find_loop(self.mat_region)
+        print(df.shape)
         
         loops = sim.df2loop(df, n=n, random_state=random_state)
         print(len(loops))
@@ -97,6 +103,8 @@ class SimulateData():
             diff = cf.ratio(self.mat1, self.mat2)
         elif method == 'reldiff':
             diff = cf.relative_difference(self.mat1, self.mat2)
+        elif method == 'reldiff_sqrt':
+            diff = cf.relative_difference_sqrt(self.mat1, self.mat2)
         else:
             raise NameError("The method is not valid. Use 'ratio' or 'reldiff'")
         
