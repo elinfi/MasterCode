@@ -8,7 +8,7 @@ from matplotlib.colors import TwoSlopeNorm
 import pretty_plotting as pplot
 
 def sub_colorbars(sub_data, region, filename, 
-                  PATH='../../Figures/Differences/Colorbar', 
+                  PATH='../img/Differences/Colorbar', 
                   fontsizes=(22, 26, 30), figsize=(27,10),
                   sharex=True, sharey=False, hspace=0.4,
                   constrained_layout=True):
@@ -39,6 +39,7 @@ def sub_colorbars(sub_data, region, filename,
     # set font sizes
     s, m, l = fontsizes
     pplot.font_size(s, m, l)
+    pplot.background_color()
     
     # set axis extent based on genomic region
     extent = pplot.region2extent(region)
@@ -67,7 +68,7 @@ def sub_colorbars(sub_data, region, filename,
                     cmap='bwr',
                     extent=extent)
     plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', ax=ax)
-    ax.set(title='Subtraction')
+    ax.set(title='Symmetric')
     pplot.format_ticks(ax)
     
     # second subplot    
@@ -77,18 +78,19 @@ def sub_colorbars(sub_data, region, filename,
                     cmap='bwr',
                     extent=extent)
     plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', ax=ax)
-    ax.set(title='Subtraction')
+    ax.set(title='Adjusted')
     pplot.format_ticks(ax)
     
     # save figure
     plt.savefig(os.path.join(PATH, f'{region}_' + filename))
     
 def sub_vmax(sub_data, region, filename, 
-             PATH='../../Figures/Differences/Colorbar', 
+             PATH='../img/Differences/Colorbar', 
              fontsizes=(16, 20, 24), figsize=(10, 8),
              sharex=True, sharey=False,
              left=0.1, bottom=0.15, right=0.9, top=0.9,
-             constrained_layout=False):
+             constrained_layout=False,
+             save=False):
     """Plot subtraction with vmax/vmin constraints on colorbar.
     """
     
@@ -122,14 +124,16 @@ def sub_vmax(sub_data, region, filename,
                     cmap='bwr',
                     extent=extent)
     plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', ax=ax)
-    ax.set(title='Subtraction')
+    ax.set(title='Symmetric')
     pplot.format_ticks(ax)
     
-    # save figure
-    plt.savefig(os.path.join(PATH, f'{region}_' + filename))
+    if save:
+        # save figure
+        plt.savefig(os.path.join(PATH, f'{region}_' + filename))
     
-def sub_norm(sub_data, region, filename, 
-             PATH='../../Figures/Differences/Colorbar', 
+def sub_norm(sub_data, region, filename=None, 
+             PATH='../img/Differences/Colorbar',
+             save=False,
              fontsizes=(16, 20, 24), figsize=(10, 8),
              left=0.1, bottom=0.15, right=0.9, top=0.9,
              sharex=True, sharey=False,
@@ -165,8 +169,9 @@ def sub_norm(sub_data, region, filename,
                     cmap='bwr',
                     extent=extent)
     plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', ax=ax)
-    ax.set(title='Subtraction')
+    ax.set(title='Adjusted')
     pplot.format_ticks(ax)
     
-    # save figure
-    plt.savefig(os.path.join(PATH, f'{region}_' + filename))
+    if save:
+        # save figure
+        plt.savefig(os.path.join(PATH, f'{region}_' + filename))
