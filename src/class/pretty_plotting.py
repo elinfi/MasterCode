@@ -3,6 +3,7 @@ import re
 import simulation_functions as sim
 import matplotlib.pyplot as plt
 
+from matplotlib.colors import to_rgba
 from matplotlib.ticker import EngFormatter
 
 def format_ticks(ax, x=True, y=True, rotate=True):
@@ -43,6 +44,13 @@ def region2extent(region):
     extent = (start, end, end, start)
     
     return extent
+
+def background_color(color='gray-light'):
+    colors = {'gray-light': '#cccccc', 
+              'gray-lighter': '#e5e5e5', 
+              'gray-lightest': '#f2f2f2'}
+    
+    plt.rcParams['axes.facecolor'] = colors[color]
 
 def font_size(SMALL_SIZE=12, MEDIUM_SIZE=14, BIGGER_SIZE=16):
     plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
