@@ -186,7 +186,7 @@ def find_tads(region):
     
     return df
 
-def df2tad(df, n=1, random_state=None):
+def df2tad_random(df, n=1, random_state=None):
     # choose random tad within given genomic range
     tads = df.sample(n=n, random_state=random_state)
     tads = tads.sort_values(['Start'])
@@ -196,6 +196,17 @@ def df2tad(df, n=1, random_state=None):
         chrom = tads['Chromosome'].values[i]
         start = tads['Start'].values[i]
         end = tads['End'].values[i]
+        
+        tad_region = concat_region(chrom, start, end)
+        tad_regions.append(tad_region)
+    return tad_regions
+
+def df2tad(df, nums):
+    tad_regions = []
+    for i in nums:
+        chrom = df['Chromosome'].values[i]
+        start = df['Start'].values[i]
+        end = df['End'].values[i]
         
         tad_region = concat_region(chrom, start, end)
         tad_regions.append(tad_region)
@@ -245,10 +256,9 @@ def find_loop(region):
     df = df.loc[df['chrom1'] == chrom]
     df = df.loc[df['start1'] >= start]
     df = df.loc[df['end2'] <= end]
-    print(df.shape[0])
     return df
 
-def df2loop(df, n=1, random_state=None):
+def df2loop_random(df, n=1, random_state=None):
     loops = df.sample(n=n, random_state=random_state)
     loops = loops.sort_values(['start1'])
     
@@ -268,3 +278,22 @@ def df2loop(df, n=1, random_state=None):
         loop_regions.append((loop1, loop2))
     
     return loop_regions
+
+def df2loop(df, nums):
+    loop_regions = []
+    for i in nums:
+        chrom1 = df['chrom1'].values[i]
+        start1 = df['start1'].values[i]
+        end1 = df['end1'].values[i]
+        
+        chrom2 = df['chrom2'].values[i]
+        start2 = df['start2'].values[i]
+        end2 = df['end2'].values[i]
+        
+        loop1 = concat_region(chrom1, start1, end1)
+        loop2 = concat_region(chrom2, start2, end2)
+        
+        loop_regions.append((loop1, loop2))
+    
+    return loop_regions
+
