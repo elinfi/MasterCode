@@ -13,7 +13,8 @@ class DataPreparation:
                 Path to a multi-resolution coolers .mcool file
             resolution (int): 
                 Resolution for cooler object
-            region  (string): 
+            region  (string):
+                (Genomic range strings may be provided as 3-tuples (chrom: str, start: int, end: int) or in UCSC-style strings of the style {chrom}:{start}-{end}. Unit prefixes k, M, G are supported in range strings. For regions with start and end that are not multiples of the resolution, selectors return the range of shortest range bins that fully contains the open interval [start, end)) 
                 Genomic range string of the style {chrom}:{start}-{end}, unit 
                 prefixes k, M, G are supported
             balance (bool, optional):
