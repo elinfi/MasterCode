@@ -39,18 +39,27 @@ def split_region(region):
     return chrom, start, end
 
 def region2extent(region):
-    chrom, start, end = split_region(region)
-    
-    extent = (start, end, end, start)
+    if len(region) <= 5:
+        extent = None
+    else:
+        chrom, start, end = split_region(region)
+        extent = (start, end, end, start)
     
     return extent
 
-def background_color(color='gray-light'):
+def background_color_permanent(color='gray-light'):
     colors = {'gray-light': '#cccccc', 
               'gray-lighter': '#e5e5e5', 
               'gray-lightest': '#f2f2f2'}
     
     plt.rcParams['axes.facecolor'] = colors[color]
+    
+def background_color(ax, color='gray-lighter'):
+    colors = {'gray-light': '#cccccc', 
+              'gray-lighter': '#e5e5e5', 
+              'gray-lightest': '#f2f2f2'}
+    
+    ax.set_facecolor(colors[color])
 
 def font_size(SMALL_SIZE=12, MEDIUM_SIZE=14, BIGGER_SIZE=16):
     plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
