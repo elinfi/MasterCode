@@ -11,8 +11,8 @@ from matplotlib.colors import LogNorm
 from matplotlib.ticker import LogLocator, LogFormatterSciNotation
 
 def plot_replicates(org, mod, region, 
-                    s=18, m=24, l=26,
-                    figsize=(16, 7.5),
+                    s=16, m=18, l=20,
+                    figsize=(15.5, 7.5),
                     background=False, 
                     save=False):
     if background:
@@ -32,10 +32,10 @@ def plot_replicates(org, mod, region,
                           sharex=True, sharey=True)
     
     # adjust subplots
-    plt.subplots_adjust(left=0.1,
-                        bottom=0.15, 
-                        right=0.9, 
-                        top=0.9, 
+    plt.subplots_adjust(#left=0.1,
+                        #bottom=0.15, 
+                        right=0.95, 
+                        #top=0.9, 
                         wspace=0.07)
     
     # norm and extent to used in plots
