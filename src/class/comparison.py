@@ -32,7 +32,7 @@ def relative_difference(mat1, mat2):
     
     return diff
 
-def relative_difference_sqrt(mat1, mat2):
+def poisson(mat1, mat2):
     """Calculates the relative difference between two Hi-C contact matrices.
         
         Let x and y be pairwise matrix elements. Then the relative difference
@@ -59,6 +59,7 @@ def relative_difference_sqrt(mat1, mat2):
 
     # calculate the relative difference
     diff = (mat1 - mat2)/np.sqrt(mean)
+    diff = diff*(1/np.sqrt(mean))
     
     return diff
 
@@ -92,8 +93,8 @@ def relative_difference_max(mat1, mat2):
     
     return diff
 
-def ratio(mat2, mat1):
-    """Calculates the ratio of two Hi-C matrices.
+def fold_change(mat1, mat2):
+    """Calculates the fold change of two Hi-C matrices.
         
         The calculations are done in the same way as in HiGlass' divide by.
         All division by zero is set to NaN.
@@ -126,14 +127,14 @@ def ratio(mat2, mat1):
     return diff
 
 def subtraction(mat1, mat2):
-    diff = mat2 - mat1
+    diff = mat1 - mat2
     
     return diff
 
 def pseudo_diff(mat1, mat2, pseudocount=0.1):
     pseudo_mat = np.ones(mat1.shape)*pseudocount
         
-    diff = (mat1 + pseudo_mat) / (mat2 + pseudo_mat)
+    diff = (mat1 + pseudocount) / (mat2 + pseudocount)
         
     return diff
 
