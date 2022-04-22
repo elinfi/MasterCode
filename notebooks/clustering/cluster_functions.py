@@ -44,6 +44,25 @@ def clustering(data, interaction_weight, diag_weight, medoids, path, filename,
                              + f'_cluster_wdiag_{diag_weight}_medoids_{medoids}.npy'), 
                 labels_mat)
         
+def clustering_interaction(data, medoids, path, filename, extension, random_state):
+    
+    diss_data = DissimilarityMatrix(data)
+    n = diss_data.n
+    triu_nan_idx = diss_data.nan_idx_triu
+    
+    # interactions difference
+    dist_mat = diss_data.scipy_dist(metric='interactions_dist', col1=0, col2=3)
+
+    kmedoids = KMedoids(dist_mat)
+    cluster_result = kmedoids.clusters(medoids=medoids, 
+                                       random_state=random_state)
+    labels_mat = kmedoids.labels4plotting_nan(n, triu_nan_idx)
+
+    np.save(os.path.join(path, 
+                         filename 
+                         + f'_cluster_wdiag_0_medoids_{medoids}{extension}_r_{random_state}.npy'), 
+            labels_mat)
+        
         
 def save_distance_matrices(data, path, filename):
     diss_data = DissimilarityMatrix(data)
