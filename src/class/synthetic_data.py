@@ -57,7 +57,7 @@ class SyntheticData():
                                    self.resolution)
 
             self.mod[i:j, i:j] = change(self.mod[i:j, i:j], **kwargs)
-            print(j)
+            print(i, j)
 
             
     def change_tad_tad(self, change, nums, **kwargs):
@@ -96,10 +96,17 @@ class SyntheticData():
             self.mod[i2:j2, i1:j1] = change(self.mod[i2:j2, i1:j1], **kwargs)
             print(i1)
             
-    def change_stripe(self, i, j, change, **kwargs):
+    def change_stripe(self, i, j, l, change, **kwargs):
+        """
+        Regulate stripe interaction.
+        
+        Args:
+            i (int):
+                left and top
+        """
         depth = 2
-        self.mod[i:j, j-depth:j] = change(self.mod[i:j, j-depth:j], **kwargs)
-        self.mod[j-depth:j, i:j] = change(self.mod[j-depth:j, i:j], **kwargs)
+        self.mod[i:j, l-depth:l] = change(self.mod[i:j, l-depth:l], **kwargs)
+        self.mod[l-depth:l, i:j] = change(self.mod[l-depth:l, i:j], **kwargs)
         
     def compare(self, method, **kwargs):
         if method == 'ratio':
