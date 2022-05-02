@@ -2,6 +2,7 @@ import os
 import sys
 import cooltools.lib.plotting
 sys.path.insert(1, '/home/elinfi/MasterCode/src/class/')
+sys.path.insert(2, '/home/elinfi/MasterCode/plot/func')
 
 import numpy as np
 import seaborn as sns
@@ -10,12 +11,13 @@ import matplotlib.pyplot as plt
 import pretty_plotting as pplot
 
 from copy import copy
-from matplotlib.ticker import LogLocator, LogFormatterSciNotation
+from matplotlib.ticker import LogLocator, LogFormatterSciNotation, LogFormatterMathtext
 from mid_point_log_norm import MidPointLogNorm
 from matplotlib.colors import TwoSlopeNorm, LogNorm
 
-PATH_DIFF = '/home/elinfi/MasterCode/data/replicates/'
-PATH_IMG = 'replicates/pdf'
+PATH_DIFF = '/home/elinfi/MasterCode/data/replicates/comparison'
+PATH_REPS = '/home/elinfi/MasterCode/data/replicates'
+PATH_IMG = 'replicates/pdf/comparison'
 REGION = 'chr10:6351511-10351511'
 
 ################################################################################
@@ -29,7 +31,8 @@ sns.set_style('ticks')
 # set extent and ticks label
 extent = pplot.region2extent(REGION)    
 locator2 = LogLocator(base=2)
-formatter2 = LogFormatterSciNotation(base=2)
+#formatter2 = LogFormatterSciNotation(base=2)
+formatter2 = LogFormatterMathtext(base=2)
 
 # set font sizes
 pplot.font_size(16, 18, 20)
@@ -45,8 +48,8 @@ fall.set_bad('w', 1.0)
 # REPLICATES ###################################################################
 ################################################################################
 
-wt1 = np.load(os.path.join(PATH_DIFF, f'{REGION}_wt1.npy'))
-wt2 = np.load(os.path.join(PATH_DIFF, f'{REGION}_wt2.npy'))
+wt1 = np.load(os.path.join(PATH_REPS, f'{REGION}_wt1.npy'))
+wt2 = np.load(os.path.join(PATH_REPS, f'{REGION}_wt2.npy'))
 
 print(np.nanmin(wt1[wt1 > 0]), np.nanmin(wt2[wt2 > 0]))
 print(np.nanmax(wt1), np.nanmax(wt2))
@@ -266,9 +269,9 @@ plt.savefig(os.path.join('/home/elinfi/MasterCode/img/', PATH_IMG,
 ################################################################################
 
 p0 = np.load(os.path.join(PATH_DIFF, f'{REGION}_ratio.npy'))
-p1 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p001.npy'))
-p2 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p01.npy'))
-p3 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p1.npy'))
+p1 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.01.npy'))
+p2 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.1.npy'))
+p3 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_1.npy'))
 print(np.sum(np.isnan(p1)))
 print(np.nanmin(p0[p0 > 0]))
     
@@ -347,22 +350,22 @@ plt.savefig(os.path.join('/home/elinfi/MasterCode/img/', PATH_IMG,
 ################################################################################
 
 p0 = np.load(os.path.join(PATH_DIFF, f'{REGION}_ratio.npy'))
-p1 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p00001.npy'))
-p2 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p0001.npy'))
-p3 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p1.npy'))
+p1 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.0001.npy'))
+p2 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.001.npy'))
+p3 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_1.npy'))
 print(np.sum(np.isnan(p1)))
 print(np.nanmin(p0[p0 > 0]))
     
 # create subplot
-f, axs = plt.subplots(figsize=(17.3, 14.3),
+f, axs = plt.subplots(figsize=(14.8, 11.9),
                       nrows=2,
                       ncols=2,
                       sharex=True, sharey=True)
 
 # adjust subplots
 plt.subplots_adjust(left=0.05,
-                    bottom=0.06, 
-                    right=0.905, 
+                    bottom=0.07, 
+                    right=0.885, 
                     top=0.97, 
                     wspace=0.15,
                     hspace=0.1)
@@ -412,8 +415,10 @@ im = ax.matshow(p3,
                 norm = MidPointLogNorm(midpoint=1, log=np.log10),
                 cmap = bwr,
                 extent = extent)
-plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
+cbar = plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax)#, ticks=locator2, format=formatter2)
+#cbar.ax.yaxis.set_major_formatter(formatter2)
+cbar.ax.yaxis.set_minor_formatter(mpl.ticker.NullFormatter())
 ax.set_title("$p = 1$", y=1.01)
 
 pplot.format_ticks(ax)
@@ -424,11 +429,94 @@ plt.savefig(os.path.join('/home/elinfi/MasterCode/img/', PATH_IMG,
                          f'{REGION}_pseudocounts_log10_2.pdf'))
 
 ################################################################################
+# PSEUDOCOUNT 0, 0.0001, 0.001, 1 ##############################################
+################################################################################
+
+p0 = np.load(os.path.join(PATH_DIFF, f'{REGION}_ratio.npy'))
+p1 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.0001.npy'))
+p2 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.001.npy'))
+p3 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_1.npy'))
+print(np.sum(np.isnan(p1)))
+print(np.nanmin(p0[p0 > 0]))
+    
+# create subplot
+f, axs = plt.subplots(figsize=(14.3, 11.9),
+                      nrows=2,
+                      ncols=2,
+                      sharex=True, sharey=True)
+
+# adjust subplots
+plt.subplots_adjust(left=0.05,
+                    bottom=0.07, 
+                    right=0.925, 
+                    top=0.97, 
+                    wspace=0.15,
+                    hspace=0.1)
+
+# no pseudocount
+ax = axs[0, 0]
+im = ax.matshow(p0,
+                norm = MidPointLogNorm(midpoint=1, log=np.log2),
+                cmap = bwr,
+                extent = extent)
+plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
+             ax=ax, ticks=locator2, format=formatter2)
+ax.set_title("$p = 0$", y=1.01)
+
+pplot.format_ticks(ax)
+pplot.background_color(ax, 'gray-light')
+
+# pseudocount = 0.0001
+ax = axs[0, 1]
+im = ax.matshow(p1,
+                norm = MidPointLogNorm(midpoint=1, log=np.log2),
+                cmap = bwr,
+                extent = extent)
+plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
+             ax=ax, ticks=locator2, format=formatter2)
+ax.set_title("$p = 0.0001$", y=1.01)
+
+pplot.format_ticks(ax)
+pplot.background_color(ax, 'gray-light')
+
+# pseudocount = 0.001
+ax = axs[1, 0]
+im = ax.matshow(p2,
+                norm = MidPointLogNorm(midpoint=1, log=np.log2),
+                cmap = bwr,
+                extent=extent)
+plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
+             ax=ax, ticks=locator2, format=formatter2)
+ax.set_title("$p = 0.001$", y=1.01)
+
+pplot.format_ticks(ax)
+pplot.background_color(ax, 'gray-light')
+
+# pseudocount = 1
+ax = axs[1, 1]
+im = ax.matshow(p3,
+                norm = MidPointLogNorm(midpoint=1, log=np.log2),
+                cmap = bwr,
+                extent = extent)
+cbar = plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
+             ax=ax, ticks=locator2, format=formatter2)
+cbar.ax.yaxis.set_major_formatter(mpl.ticker.NullFormatter())
+cbar.ax.yaxis.set_minor_formatter(mpl.ticker.LogFormatterMathtext(base=2))
+ax.set_title("$p = 1$", y=1.01)
+
+pplot.format_ticks(ax)
+pplot.background_color(ax, 'gray-light')
+
+    
+plt.savefig(os.path.join('/home/elinfi/MasterCode/img/', PATH_IMG, 
+                         f'{REGION}_pseudocounts_log2_2.pdf'))
+
+################################################################################
 # SUBTRACTION VS PSEUDOCOUNT P = 1 #############################################
 ################################################################################
 
 sub = np.load(os.path.join(PATH_DIFF, f'{REGION}_sub.npy'))
-pseudo = np.load(os.path.join(PATH_DIFF, f'{REGION}_p1.npy'))
+pseudo = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_1.npy'))
 
 diff_1 = sub - (np.log10(pseudo))
 diff = sub - (pseudo - 1)
