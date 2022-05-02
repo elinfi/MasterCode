@@ -2,6 +2,7 @@ import os
 import sys
 import cooltools.lib.plotting
 sys.path.insert(1, '/home/elinfi/MasterCode/src/class/')
+sys.path.insert(2, '/home/elinfi/MasterCode/plot/func')
 
 import numpy as np
 import seaborn as sns
@@ -63,7 +64,7 @@ p2 = normalize(p2.reshape(1, -1))
 p3 = normalize(p3.reshape(1, -1))
 """
 # create subplot
-fig, axs = plt.subplots(figsize=(16, 12),
+fig, axs = plt.subplots(figsize=(16, 20),
                         nrows=2,
                         ncols=2,
                         sharex=False, sharey=False)
@@ -78,7 +79,7 @@ sns.histplot(data=p0, ax=axs[0, 0], bins=50, log_scale=True)
 sns.histplot(data=p1, ax=axs[0, 0], bins=50, log_scale=True)
 sns.histplot(data=p2, ax=axs[1, 0], bins=50, log_scale=True)
 sns.histplot(data=p3, ax=axs[1, 1], bins=50, log_scale=True)
-plt.setp(axs[1,1].get_xticklabels(), rotation=45, ha='right')
+plt.setp(axs[1,1].get_xticklabels(), rotation=20, ha='right')
 """
 sns.kdeplot(data=p0, ax=axs[0, 0])
 sns.kdeplot(data=p1, ax=axs[0, 1])
