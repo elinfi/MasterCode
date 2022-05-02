@@ -1,6 +1,5 @@
 import re 
 
-import simulation_functions as sim
 import matplotlib.pyplot as plt
 
 from matplotlib.colors import to_rgba
