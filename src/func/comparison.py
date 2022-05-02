@@ -59,7 +59,6 @@ def poisson(mat1, mat2):
 
     # calculate the relative difference
     diff = (mat1 - mat2)/np.sqrt(mean)
-    diff = diff*(1/np.sqrt(mean))
     
     return diff
 
