@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(1, '/home/elinfi/MasterCode/src/class')
 import os
 
 import numpy as np
@@ -60,7 +62,7 @@ def clustering_interaction(data, medoids, path, filename, extension, random_stat
 
     np.save(os.path.join(path, 
                          filename 
-                         + f'_cluster_wdiag_0_medoids_{medoids}{extension}_r_{random_state}.npy'), 
+                         + f'_cluster_wdiag_0_medoids_{medoids}{extension}_rstate_{random_state}.npy'), 
             labels_mat)
         
         
@@ -76,11 +78,12 @@ def save_distance_matrices(data, path, filename):
     # diagonal distance
     diag_dist = diss_data.scipy_dist(metric='diagonal_dist', col1=0, col2=3)
     
-    with open(os.join.path(path, filename + '_dist_mat.npy')) as f:
+    with open(os.path.join(path, filename + '_dist_mat.npy'), 'wb') as f:
               np.save(f, n)
               np.save(f, triu_nan_idx)
               np.save(f, interaction_dist)
               np.save(f, diag_dist)
+    
               
 def open_distance_matrices(distmat_file, interaction_weight, diag_weight, 
                            medoids, path, filename, random_state):
@@ -104,7 +107,7 @@ def open_distance_matrices(distmat_file, interaction_weight, diag_weight,
             random state 
     """
               
-    with open(distmat_file) as f:
+    with open(distmat_file, 'rb') as f:
               n = np.load(f)
               triu_nan_idx = np.load(f)
               interaction_dist = np.load(f)
@@ -119,7 +122,7 @@ def open_distance_matrices(distmat_file, interaction_weight, diag_weight,
                                               random_state=random_state)
             labels_mat = kmedoids.labels4plotting_nan(n, triu_nan_idx)
             
-            np.save(os.path.join(path, filename + f'_cluster_wdiag_{w2}_medoids_{medoids}.npy'), 
+            np.save(os.path.join(path, filename + f'_cluster_wdiag_{w2}_medoids_{medoids}_rstate_{random_state}.npy'), 
                     labels_mat)
     else:
         dist_mat = interaction_weight*interaction_dist + diag_weight*diag_dist
@@ -131,5 +134,5 @@ def open_distance_matrices(distmat_file, interaction_weight, diag_weight,
 
         np.save(os.path.join(path, 
                              filename 
-                             + f'_cluster_wdiag_{diag_weight}_medoids_{medoids}.npy'), 
+                             + f'_cluster_wdiag_{diag_weight}_medoids_{medoids}_rstate_{random_state}.npy'), 
                 labels_mat)
