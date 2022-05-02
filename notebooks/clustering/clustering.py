@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.insert(1, '/home/elinfi/MasterCode/src/class/')
+sys.path.insert(1, '/home/elinfi/MasterCode/src/class/func')
 
 import numpy as np
 
