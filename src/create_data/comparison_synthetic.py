@@ -7,9 +7,13 @@ import comparison as comp
 
 
 REGION = 'chr10:6351511-10351511'
+
 #EXTENSION = '_tad_1.4_2_1.7'
 #EXTENSION = '_k_2'
-EXTENSION = '_tad_2_3_4_tadtad_3_stripe_2'
+#EXTENSION = '_tad_2_0.5_4_tadtad_3_stripe_2'
+#EXTENSION = '_tad_2_0.5_3_tadtad_2_stripe_3'
+EXTENSION = '_tad_2_3_0.5_tadtad_2_stripe_0.5'
+
 PATH_IN_DATA = '/home/elinfi/MasterCode/data/simulations/'
 PATH_WT1 = os.path.join(PATH_IN_DATA, REGION + '_wt1.npy')
 PATH_MOD = os.path.join(PATH_IN_DATA, REGION + EXTENSION + '.npy')
