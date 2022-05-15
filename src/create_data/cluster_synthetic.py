@@ -8,16 +8,18 @@ from cluster_functions import clustering_interaction
 
 
 PATH_IN_DATA = '/home/elinfi/MasterCode/data/simulations/comparison'
-PATH_OUT_DATA = '/home/elinfi/MasterCode/data/simulations/cluster/tad_2_3_4_stripe_2'
+PATH_OUT_DATA = '/home/elinfi/MasterCode/data/simulations/cluster/tad_2_3_0.5_tadtad_2_stripe_0.5'
 
 REGION = 'chr10:6351511-10351511'
 #EXTENSION = '_k_2'
 #EXTENSION = '_tad_1.4_2_1.7'
-EXTENSION = '_tad_2_3_4_stripe_2'
+#EXTENSION = '_tad_2_3_4_stripe_2'
+EXTENSION = '_tad_2_3_0.5_tadtad_2_stripe_0.5'
 
-MEDOIDS = 4
+MEDOIDS = [5, 6]
 #RANDOM_STATE = [19, 45, 18888, 4321, 1791, 345628]
-RANDOM_STATE = [19]
+#RANDOM_STATE = [19]
+RANDOM_STATE = [19, 922, 293, 473, 892, 113, 272, 249,  89, 458]
 
 ################################################################################
 # CLUSTERING ###################################################################
@@ -83,7 +85,7 @@ for random_state in RANDOM_STATE:
 
     p0 = np.load(os.path.join(PATH_IN_DATA, 
                                REGION + EXTENSION + f'_ratio.npy'))
-    clustering_interaction(np.log10(p0), 
+    clustering_interaction(np.log2(p0), 
                            MEDOIDS,
                            PATH_OUT_DATA, 
                            REGION + EXTENSION + '_p0',
@@ -93,7 +95,7 @@ for random_state in RANDOM_STATE:
     for p in [0.0001, 0.001, 1]:
         pseudo = np.load(os.path.join(PATH_IN_DATA, 
                                       REGION + EXTENSION + f'_p_{p}.npy'))
-        clustering_interaction(np.log10(pseudo), 
+        clustering_interaction(np.log2(pseudo), 
                                MEDOIDS,
                                PATH_OUT_DATA, 
                                REGION + EXTENSION + f'_p_{p}',
