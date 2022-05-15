@@ -56,14 +56,15 @@ def clustering_interaction(data, medoids, path, filename, extension, random_stat
     dist_mat = diss_data.scipy_dist(metric='interactions_dist', col1=0, col2=3)
 
     kmedoids = KMedoids(dist_mat)
-    cluster_result = kmedoids.clusters(medoids=medoids, 
-                                       random_state=random_state)
-    labels_mat = kmedoids.labels4plotting_nan(n, triu_nan_idx)
+    for medoid in medoids:
+        cluster_result = kmedoids.clusters(medoids=medoid, 
+                                           random_state=random_state)
+        labels_mat = kmedoids.labels4plotting_nan(n, triu_nan_idx)
 
-    np.save(os.path.join(path, 
-                         filename 
-                         + f'_cluster_wdiag_0_medoids_{medoids}{extension}_rstate_{random_state}.npy'), 
-            labels_mat)
+        np.save(os.path.join(path, 
+                             filename 
+                             + f'_cluster_wdiag_0_medoids_{medoid}{extension}_rstate_{random_state}.npy'), 
+                labels_mat)
         
         
 def save_distance_matrices(data, path, filename):
