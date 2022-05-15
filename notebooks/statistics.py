@@ -55,6 +55,8 @@ wt2_pos = wt2 > 0
 wt1_zero = np.where(wt2_pos, wt1_zero, False)
 wt2_zero = np.where(wt1_pos, wt2_zero, False)
 print(np.sum(wt2_zero))
+print(np.nanmean(wt1[wt2_zero]))
+print(np.nanmean(wt2[wt1_zero]))
 
 pseudo_raw = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.0001.npy'))
 pseudo = np.log2(pseudo_raw)
@@ -112,3 +114,15 @@ plt.colorbar(im, fraction=0.0235, pad=0.02, label='Interaction frequency',
     
 plt.savefig(os.path.join('/home/elinfi/MasterCode/img/', PATH_IMG, 
                          f'{REGION}_low_IF_region.pdf'))
+
+
+################################################################################
+# diagonal stuff ###############################################################
+################################################################################
+
+
+p0 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_0.0001.npy'))
+p3 = np.load(os.path.join(PATH_DIFF, f'{REGION}_p_1.npy'))
+
+print(np.nanmean(p0.diagonal(2)))
+print(np.nanmean(p3.diagonal(2)))
