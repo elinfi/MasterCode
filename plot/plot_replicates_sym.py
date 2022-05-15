@@ -84,7 +84,7 @@ im = ax.matshow(wt1,
                 cmap=fall,
                 norm= LogNorm(),
                 extent=extent)
-ax.set_title('WT 001', y=1.01)
+ax.set_title('WT1', y=1.01)
 ax.tick_params(axis='x', labelsize=16)
 ax.tick_params(axis='y', labelsize=16)
 pplot.format_ticks(ax)
@@ -96,7 +96,7 @@ im = ax.matshow(wt2,
                 norm=LogNorm(),
                 extent=extent)
 
-ax.set_title('WT 002', y=1.01)
+ax.set_title('WT2', y=1.01)
 ax.tick_params(axis='x', labelsize=16)
 ax.tick_params(axis='y', labelsize=16)
 pplot.format_ticks(ax)
@@ -138,6 +138,7 @@ im = ax.matshow(diff,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("Log fold change", y=1.01)
+ax.set_title('A', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -157,6 +158,7 @@ im = ax.matshow(diff + vmin,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("HiGlass divide by", y=1.01)
+ax.set_title('B', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -293,7 +295,7 @@ f, axs = plt.subplots(figsize=(14.2, 11.9),
 plt.subplots_adjust(left=0.05,
                     bottom=0.065, 
                     right=0.93, 
-                    top=0.97, 
+                    top=0.965, 
                     wspace=0.15,
                     hspace=0.1)
 
@@ -309,6 +311,7 @@ im = ax.matshow(p0,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("$p = 0$", y=1.01)
+ax.set_title('A', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -323,7 +326,8 @@ im = ax.matshow(p1,
                 extent = extent)
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
-ax.set_title("$p = 0.0001$", y=1.01)
+ax.set_title("$p = 10^{-4}$", y=1.01)
+ax.set_title('B', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -338,7 +342,8 @@ im = ax.matshow(p2,
                 extent=extent)
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
-ax.set_title("$p = 0.001$", y=1.01)
+ax.set_title("$p = 10^{-3}$", y=1.01)
+ax.set_title('C', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -359,6 +364,7 @@ cbar.ax.yaxis.set_major_formatter(mpl.ticker.LogFormatterMathtext(base=2, labelO
 cbar.ax.yaxis.set_minor_formatter(mpl.ticker.LogFormatterMathtext(base=2, ))
 
 ax.set_title("$p = 1$", y=1.01)
+ax.set_title('D', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')

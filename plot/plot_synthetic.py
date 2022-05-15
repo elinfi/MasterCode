@@ -20,7 +20,9 @@ PATH_IMG = 'simulations/pdf/comparison'
 REGION = 'chr10:6351511-10351511'
 #EXTENSION = '_tad_1.4_2_1.7'
 #EXTENSION = '_k_2'
-EXTENSION = '_tad_2_3_4_tadtad_3_stripe_2'
+#EXTENSION = '_tad_2_3_4_tadtad_3_stripe_2'
+#EXTENSION = '_tad_2_0.5_3_tadtad_2_stripe_3'
+EXTENSION = '_tad_2_3_0.5_tadtad_2_stripe_0.5'
 
 ################################################################################
 # STYLE SETTINGS ###############################################################
@@ -73,6 +75,7 @@ im = ax.matshow(diff,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("Log fold change", y=1.01)
+ax.set_title('A', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -92,6 +95,7 @@ im = ax.matshow(diff + vmin,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("HiGlass divide by", y=1.01)
+ax.set_title('B', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -315,11 +319,6 @@ p1 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{0.0001}.npy'))
 p2 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{0.001}.npy'))
 p3 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{1}.npy'))
 
-print(np.sum(np.isnan(p0)))
-print(np.sum(np.isnan(p1)))
-print(np.sum(np.isnan(p2)))
-print(np.sum(np.isnan(p3)))
-
 # create subplot
 f, axs = plt.subplots(figsize=(14.8, 11.9),
                       nrows=2,
@@ -343,6 +342,7 @@ im = ax.matshow(p0,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax)#, ticks=locator2, format=formatter2)
 ax.set_title("$p = 0$", y=1.01)
+ax.set_title('A', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -355,7 +355,8 @@ im = ax.matshow(p1,
                 extent = extent)
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax)#, ticks=locator2, format=formatter2)
-ax.set_title("$p = 0.0001$", y=1.01)
+ax.set_title("$p = 10^{-4}$", y=1.01)
+ax.set_title('B', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -368,7 +369,8 @@ im = ax.matshow(p2,
                 extent=extent)
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax)#, ticks=locator2, format=formatter2)
-ax.set_title("$p = 0.001$", y=1.01)
+ax.set_title("$p = 10^{-3}$", y=1.01)
+ax.set_title('C', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -382,6 +384,7 @@ im = ax.matshow(p3,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax)#, ticks=locator2, format=formatter2)
 ax.set_title("$p = 1$", y=1.01)
+ax.set_title('D', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -397,11 +400,6 @@ p0 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + '_ratio.npy'))
 p1 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{0.0001}.npy'))
 p2 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{0.001}.npy'))
 p3 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{1}.npy'))
-
-print(np.sum(np.isnan(p0)))
-print(np.sum(np.isnan(p1)))
-print(np.sum(np.isnan(p2)))
-print(np.sum(np.isnan(p3)))
 
 # create subplot
 f, axs = plt.subplots(figsize=(14.2, 11.9),
@@ -426,6 +424,7 @@ im = ax.matshow(p0,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("$p = 0$", y=1.01)
+ax.set_title('A', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -439,6 +438,7 @@ im = ax.matshow(p1,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("$p = 0.0001$", y=1.01)
+ax.set_title('B', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -452,6 +452,7 @@ im = ax.matshow(p2,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("$p = 0.001$", y=1.01)
+ax.set_title('C', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -469,6 +470,7 @@ cbar.ax.yaxis.set_major_formatter(mpl.ticker.NullFormatter())
 cbar.ax.yaxis.set_minor_formatter(mpl.ticker.LogFormatterMathtext(base=2))
 
 ax.set_title("$p = 1$", y=1.01)
+ax.set_title('D', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -477,18 +479,13 @@ plt.savefig(os.path.join('/home/elinfi/MasterCode/img/', PATH_IMG,
                          REGION + EXTENSION + '_pseudocounts_log2.pdf'))
 
 ################################################################################
-# PSEUDOCOUNT 0, 0.0001, 0.001, 1 ##############################################
+# PSEUDOCOUNT 0, 0.0001, 0.001, 1 SYM ##########################################
 ################################################################################
 
 p0 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + '_ratio.npy'))
 p1 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{0.0001}.npy'))
 p2 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{0.001}.npy'))
 p3 = np.load(os.path.join(PATH_DIFF, REGION + EXTENSION + f'_p_{1}.npy'))
-
-print(np.sum(np.isnan(p0)))
-print(np.sum(np.isnan(p1)))
-print(np.sum(np.isnan(p2)))
-print(np.sum(np.isnan(p3)))
 
 # create subplot
 f, axs = plt.subplots(figsize=(14.2, 11.9),
@@ -500,7 +497,7 @@ f, axs = plt.subplots(figsize=(14.2, 11.9),
 plt.subplots_adjust(left=0.05,
                     bottom=0.065, 
                     right=0.93, 
-                    top=0.97, 
+                    top=0.965, 
                     wspace=0.15,
                     hspace=0.1)
 
@@ -516,6 +513,7 @@ im = ax.matshow(p0,
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
 ax.set_title("$p = 0$", y=1.01)
+ax.set_title('A', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -530,7 +528,8 @@ im = ax.matshow(p1,
                 extent = extent)
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
-ax.set_title("$p = 0.0001$", y=1.01)
+ax.set_title("$p = 10^{-4}$", y=1.01)
+ax.set_title('B', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -545,7 +544,8 @@ im = ax.matshow(p2,
                 extent=extent)
 plt.colorbar(im, fraction=0.046, pad=0.04, label='Interaction difference', 
              ax=ax, ticks=locator2, format=formatter2)
-ax.set_title("$p = 0.001$", y=1.01)
+ax.set_title("$p = 10^{-3}$", y=1.01)
+ax.set_title('C', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
@@ -566,6 +566,7 @@ cbar.ax.yaxis.set_major_formatter(mpl.ticker.LogFormatterMathtext(base=2, labelO
 cbar.ax.yaxis.set_minor_formatter(mpl.ticker.LogFormatterMathtext(base=2))
 
 ax.set_title("$p = 1$", y=1.01)
+ax.set_title('D', loc='left', fontweight="bold", y=1.01)
 
 pplot.format_ticks(ax)
 pplot.background_color(ax, 'gray-light')
